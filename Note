@@ -1,0 +1,38 @@
+## To optimize:
+
+1. Use Pre-filtering
+
+   - Instead of comparing every lost item with every found item, apply filters:
+   - Same category (e.g., only match backpacks with backpacks).
+   - Same timeframe (limit searches to a few weeks).
+   - Nearby locations (reduce unnecessary comparisons).
+
+2. Optimize Matching Frequency
+
+   - Run real-time matching only for new submissions.
+   - Re-run matches periodically for older items instead of every time a new item is added.
+
+3. Use a Scoring Threshold
+   - Only store matches with a high AI confidence score (e.g., 80%+).
+   - Avoid creating too many unnecessary Match entries.
+
+## Final Flow (Efficient Matching Process)
+
+- User A submits a lost item.
+- User B submits a found item (it’s just an independent post).
+- AI matches lost & found items only when necessary based on pre-filters.
+- If a high-confidence match is found → create a Match & notify users.
+
+Tickets:
+Upload Lost Item
+Upload Found Item
+AI-Powered Tagging
+AI Matching - Pre-filtering
+AI Matching - Batch Processing
+AI Matching - Scoring System
+Match Notifications
+User Authentication
+Cloud Storage
+AI Optimization
+Periodic Matching Updates
+UI/UX Design

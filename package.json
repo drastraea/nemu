@@ -11,8 +11,10 @@
     "docker-down": "docker-compose down"
   },
   "dependencies": {
+    "@heroui/react": "^2.7.4",
     "@prisma/client": "^6.4.1",
     "bcrypt": "^5.1.1",
+    "framer-motion": "^12.4.7",
     "next": "15.2.0",
     "prisma": "^6.4.1",
     "react": "^19.0.0",
