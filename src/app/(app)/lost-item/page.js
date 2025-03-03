@@ -1,3 +1,5 @@
-export function LostItem() {
-    return <div>LostItem</div>;
+export default function LostItem() {
+    return (
+        <div>LostItem</div>
+    );
 }
