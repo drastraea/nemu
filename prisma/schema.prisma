@@ -17,11 +17,18 @@ model User {
   id            String         @id @default(uuid())
   email         String         @unique
   name          String
-  password      String
+  password      String?        // ? => oauth google
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  session       Session[]
   items         Item[]
   notifications Notification[]
+}
+
+model Session {
+  id        String  @id @default(uuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model Item {
