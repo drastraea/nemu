@@ -143,7 +143,7 @@ export default function Page() {
         </div>
       )}
       <section className="flex gap-x-2 justify-center">
-        <p className="text-gray-500">Don't have an account??</p>
+        <p className="text-gray-500">Don&rsquo;t have an account?</p>
         <Link href="/register" className="text-blue-700  hover:underline">
           Register
         </Link>
