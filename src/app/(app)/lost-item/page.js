@@ -1,5 +1,9 @@
-export default function LostItem() {
+import LostForm from "./_components/lost-form";
+
+export default function LostPage() {
     return (
-        <div>LostItem</div>
+        <div>
+            <LostForm />
+        </div>
     );
 }
