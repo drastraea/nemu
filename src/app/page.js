@@ -1,9 +1,9 @@
+import { Card } from "@heroui/react";
+
 export default function Home() {
   return (
-    <div>
-      <header>Header</header>
-      <main>Main</main>
-      <footer>Footer</footer>
+    <div className="py-8">
+      Main Content
     </div>
   );
 }
