@@ -2,7 +2,6 @@
 import { useActionState } from "react";
 import { Button, DateInput, Input, Select, SelectItem } from "@heroui/react";
 import { createLostItem } from "../action";
-import { Abel } from "next/font/google";
 
 export const categories = [
     {key:"electronic", label:"Electronic"},
@@ -35,8 +34,8 @@ export default function LostForm() {
             <Input label="File" type="file" name="file" variant="border" className="rounded-lg" />
 
             <Button isLoading={pending} type="submit">Submit</Button>
-            {state?.success === false && (<div className="text-red-500">{state.message}</div>)}
-            {state?.success && (<div className="text-green-500">{state.message}</div>)}
+            {state?.success === false && (<div className="justify-center text-red-500">{state.message}</div>)}
+            {state?.success && (<div className="justify-center text-green-500">{state.message}</div>)}
         </form>
     );
 }
