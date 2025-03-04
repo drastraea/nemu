@@ -26,7 +26,6 @@ export async function GET(req) {
     },
   });
 
-  // create user
   if (!user) {
     const createUser = await prisma.user.create({
       data: {
@@ -50,7 +49,6 @@ export async function GET(req) {
     redirect("/");
   }
 
-  // user already exists
   const newSession = await prisma.session.create({
     data: {
       userId: user.id,
