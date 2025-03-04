@@ -1,5 +1,9 @@
 "use server";
 
+import { auth } from "@/libs/auth";
+import prisma from "@/libs/db";
+import { uploadImage } from "@/libs/file-store";
+
 export async function createLostItem(_, formData) {
     const name = formData.get("name");
     const category = formData.get("category");
@@ -7,14 +11,13 @@ export async function createLostItem(_, formData) {
     const location = formData.get("location");
     const file = formData.get("file");
 
-    // initialize the session
-    // const session = await getSession();
-    // if (!session) {
-    //     return {
-    //         success: false,
-    //         message: "Please login to submit a lost item."
-    //     };
-    // }
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "Please login to submit a lost item."
+        };
+    }
 
     if (!name || !category || !timeframe || !location || !file) {
         return {
@@ -23,11 +26,25 @@ export async function createLostItem(_, formData) {
         };
     }
 
-    // Save the lost item to the database
-    // change the file name to a unique name
-    // submit the formdata to the database;
-    // upload the file image to cloudserver;
-    // await uploadImage({key: file.name, folder: session.user.id, body:file})
+    const newLostItem = await prisma.item.create({
+        data: {
+            name,
+            type: "LOST",
+            category,
+            timeframe,
+            location,
+            user: { connect: { id: session.user.id } }
+        }
+    });
+
+    const lostItemImages = await prisma.image.create({
+        data: {
+            url: file.name,
+            itemId: newLostItem
+        }
+    });
+
+    await uploadImage({ key: file.name, folder: `lost ${session.user.id}`, body: file })
 
     return {
         success: true,
