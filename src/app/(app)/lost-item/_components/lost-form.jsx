@@ -1,12 +1,18 @@
 "use client"
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { Button, DateInput, Input, Select, SelectItem } from "@heroui/react";
 import { createLostItem } from "../action";
+import { Abel } from "next/font/google";
+
+export const categories = [
+    {key:"electronic", label:"Electronic"},
+    {key:"clothing", label:"Clothing"},
+    {key:"accessories", label:"Accessories"},
+    {key:"other", label:"Others"},
+];
 
 export default function LostForm() {
     const [state, formAction, pending] = useActionState(createLostItem, null);
-    const [session, setSession] = useState(null);
-    const [isDelayed, setIsDelayed] = useState(false);
 
     return (
         <form action={formAction} className="flex flex-col gap-4 p-4 max-w-md mx-auto">
@@ -15,10 +21,9 @@ export default function LostForm() {
             />
 
             <Select label="Category" placeholder="Select Category" name="category" variant="border" className="rounded-lg">
-                <SelectItem value="Electronics">Electronics</SelectItem>
-                <SelectItem value="Clothing">Clothing</SelectItem>
-                <SelectItem value="Accessories">Accessories</SelectItem>
-                <SelectItem value="Others">Others</SelectItem>
+                {categories.map((category) => (
+                    <SelectItem key={category.key} value={category.key}>{category.label}</SelectItem>
+                ))}
             </Select>
 
             <DateInput label="Timeframe" name="timeframe" variant="border" className="rounded-lg" required
