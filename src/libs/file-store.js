@@ -5,14 +5,13 @@ export async function uploadImage({ key, folder, body }) {
     const buffer = Buffer.from(await body.arrayBuffer());
 
     try {
-        const commnand = new PutObjectCommand({
+        const command = new PutObjectCommand({
             Bucket: "nemu",
             Key: `${folder}/${key}`,
             Body: buffer,
             ContentType: body.type
         });
-        const fileUpload = await s3Client.send(commnand);
-        console.log("File uploaded", fileUpload);
+        const fileUpload = await s3Client.send(command);
     } catch (error) {
         console.error("Error uploading file", error);
     }

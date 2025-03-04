@@ -1,6 +1,6 @@
 "use client"
 import { useActionState, useState } from "react";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { Button, DateInput, Input, Select, SelectItem } from "@heroui/react";
 import { createLostItem } from "../action";
 
 export default function LostForm() {
@@ -21,7 +21,7 @@ export default function LostForm() {
                 <SelectItem value="Others">Others</SelectItem>
             </Select>
 
-            <Input label="Timeframe" placeholder="Timeframe" name="timeframe" variant="border" className="rounded-lg" required
+            <DateInput label="Timeframe" name="timeframe" variant="border" className="rounded-lg" required
             />
 
             <Input label="Location" placeholder="Location" name="location" variant="border" className="rounded-lg" required
@@ -30,6 +30,8 @@ export default function LostForm() {
             <Input label="File" type="file" name="file" variant="border" className="rounded-lg" />
 
             <Button isLoading={pending} type="submit">Submit</Button>
+            {state?.success === false && (<div className="text-red-500">{state.message}</div>)}
+            {state?.success && (<div className="text-green-500">{state.message}</div>)}
         </form>
     );
 }

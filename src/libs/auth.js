@@ -7,14 +7,13 @@ export async function auth() {
     try {
         const cookieStore = await cookies();
         const sessionId = cookieStore.get("sessionId")?.value;
-
         if (!sessionId) {
             return null;
         }
 
         const session = await prisma.session.findFirst({
             where: {
-                userId: sessionId,
+                id: sessionId,
             },
             include: {
                 user: {
@@ -30,6 +29,8 @@ export async function auth() {
         if (!session) {
             return null;
         }
+
+        return session;
     } catch (error) {
         console.error("Error authenticating user", error);
         return null;

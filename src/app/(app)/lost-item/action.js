@@ -7,11 +7,12 @@ import { uploadImage } from "@/libs/file-store";
 export async function createLostItem(_, formData) {
     const name = formData.get("name");
     const category = formData.get("category");
-    const timeframe = formData.get("timeframe");
+    const timeframe = new Date(formData.get("timeframe"));
     const location = formData.get("location");
     const file = formData.get("file");
 
     const session = await auth();
+
     if (!session) {
         return {
             success: false,
@@ -19,7 +20,7 @@ export async function createLostItem(_, formData) {
         };
     }
 
-    if (!name || !category || !timeframe || !location || !file) {
+    if (!name || !category || !timeframe || !location) {
         return {
             success: false,
             message: "Please fill in all fields."
@@ -37,14 +38,14 @@ export async function createLostItem(_, formData) {
         }
     });
 
-    const lostItemImages = await prisma.image.create({
+    await prisma.image.create({
         data: {
             url: file.name,
-            itemId: newLostItem
+            itemId: newLostItem.id
         }
     });
 
-    await uploadImage({ key: file.name, folder: `lost ${session.user.id}`, body: file })
+    await uploadImage({ key: file.name, folder: newLostItem.id, body: file })
 
     return {
         success: true,
