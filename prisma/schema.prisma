@@ -17,7 +17,7 @@ model User {
   id            String         @id @default(uuid())
   email         String         @unique
   name          String
-  password      String?        // ? => oauth google
+  password      String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   session       Session[]
@@ -36,15 +36,15 @@ model Item {
   userId      String
   user        User      @relation(fields: [userId], references: [id])
   type        ItemType
-  title       String
-  description String    @db.Text
+  category    String?
+  name        String
+  timeframe   DateTime?
   location    String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   images      Image[]
   itemTags    ItemTag[]
   
-  // Relationships for matches
   asLostItem   Match[] @relation("LostItem")
   asFoundItem  Match[] @relation("FoundItem")
 }
@@ -66,7 +66,7 @@ model Image {
 model Tag {
   id        String    @id @default(uuid())
   name      String    @unique
-  type      String    // e.g., "color", "object_type", "brand"
+  type      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   itemTags  ItemTag[]
@@ -96,7 +96,7 @@ model Match {
   lostItem    Item         @relation("LostItem", fields: [lostItemId], references: [id])
   foundItemId String
   foundItem   Item         @relation("FoundItem", fields: [foundItemId], references: [id])
-  score       Float        // AI confidence score for the match
+  score       Float
   status      MatchStatus  @default(PENDING)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
