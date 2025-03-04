@@ -6,7 +6,7 @@ import prisma from "@/libs/db";
 export async function auth() {
     try {
         const cookieStore = await cookies();
-        const sessionId = cookieStore.get("session_id");
+        const sessionId = cookieStore.get("sessionId")?.value;
 
         if (!sessionId) {
             return null;
@@ -14,7 +14,7 @@ export async function auth() {
 
         const session = await prisma.session.findFirst({
             where: {
-                session: sessionId,
+                userId: sessionId,
             },
             include: {
                 user: {
