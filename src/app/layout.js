@@ -1,9 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
-import { auth } from "@/libs/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,21 +17,13 @@ export const metadata = {
   description: "Find your lost items with the power of AI",
 };
 
-const session = await auth();
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <div className="flex flex-col h-screen">
-            <Nav auth={session} />
-            <main className="flex-grow w-6/12 self-center">{children}</main>
-            <Footer />
-          </div>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
