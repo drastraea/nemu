@@ -1,5 +1,6 @@
 "use server";
 
+import { getTags } from "@/libs/aitagging";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
@@ -46,6 +47,10 @@ export async function createLostItem(_, formData) {
     });
 
     await uploadImage({ key: file.name, folder: newLostItem.id, body: file })
+
+    const imageUrl = `${newLostItem.id}/${file.name}`;
+
+    await getTags(imageUrl);
 
     return {
         success: true,
