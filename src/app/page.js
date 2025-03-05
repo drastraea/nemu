@@ -3,7 +3,10 @@ import { Card } from "@heroui/react";
 export default function Home() {
   return (
     <div className="py-8">
-      Main Content
+      <div>Main</div>
+      <div>Content</div>
+      <div>Flow</div>
+      <div>About</div>
     </div>
   );
 }
