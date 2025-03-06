@@ -16,7 +16,7 @@ export async function getTags(image) {
                     "- Brand (if visible)\n" +
                     "- Condition (e.g., new, worn, damaged)\n" +
                     "- Distinguishing features (e.g., scratches, logos, patterns, attachments)\n" +
-                    "Return the tags as array"
+                    "Return the tags as json"
             },
             {
                 role: "user", content: [

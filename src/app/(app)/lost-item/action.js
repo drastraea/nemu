@@ -50,7 +50,37 @@ export async function createLostItem(_, formData) {
 
     const imageUrl = `${newLostItem.id}/${file.name}`;
 
-    await getTags(imageUrl);
+    const tags = await getTags(imageUrl);
+
+    await Promise.all(
+        tags.map(async (tagData) =>
+            Promise.all(
+                Object.entries(tagData).map(async ([type, name]) => {
+                    if (name.toLowerCase() !== "unknown") {
+                        let tag = await prisma.tag.findUnique({
+                            where: {
+                                name
+                            }
+                        });
+
+                        if (!tag) {
+                            tag = await prisma.tag.create({
+                                data: {
+                                    name, type
+                                }
+                            });
+                        };
+
+                        await prisma.itemTag.create({
+                            data: {
+                                itemId: newLostItem.id,
+                                tagId: tag.id
+                            }
+                        })
+                    }
+                })
+            ))
+    )
 
     return {
         success: true,
