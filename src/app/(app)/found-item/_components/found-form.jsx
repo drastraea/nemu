@@ -1,7 +1,8 @@
 "use client";
-import { useActionState } from "react";
-import { Button, DateInput, Input, Select, SelectItem } from "@heroui/react";
+import { useActionState, useState } from "react";
+import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
 import { createFoundItem } from "../action";
+import Image from "next/image";
 
 export const categories = [
   { key: "electronic", label: "Electronic" },
@@ -12,6 +13,14 @@ export const categories = [
 
 export default function FoundForm() {
   const [state, formAction, pending] = useActionState(createFoundItem, null);
+  const [preview, setPreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if(file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  }
 
   return (
     <form
@@ -41,7 +50,7 @@ export default function FoundForm() {
         ))}
       </Select>
 
-      <DateInput
+      <DatePicker
         label="Timeframe"
         name="timeframe"
         variant="border"
@@ -64,7 +73,11 @@ export default function FoundForm() {
         name="file"
         variant="border"
         className="rounded-lg"
+        accept="image/*"
+        onChange={handleFileChange}
       />
+
+      {preview && (<Image src={preview} alt="Upload Photo Preview" width={400} height={400} className="object-cover rounded-lg"/>)}
 
       <Button isLoading={pending} type="submit">
         Submit

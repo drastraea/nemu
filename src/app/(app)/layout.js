@@ -8,7 +8,7 @@ export default function Layout({ children }) {
     return (
         <div className="flex flex-col h-screen">
             <Nav auth={session} />
-            <main className="flex-grow w-6/12 self-center">{children}</main>
+            <main className="flex-grow lg:w-8/12 self-center py-8">{children}</main>
             <Footer />
         </div>
     )
