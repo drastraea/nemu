@@ -7,7 +7,7 @@ export const Nav = ({auth}) => {
 
     return (
         <div className="bg-black text-white py-2 px-4 lg:mx-40 flex justify-between items-center rounded-b-lg">
-            <Link className="" href="/">Nemu</Link>
+            <Link className="font-mono tracking-wide" href="/">NEMU</Link>
             <div className="flex space-x-4">
                 <Link href="/lost-item" className="">Lost Item</Link>
                 <Link href="/found-item" className="">Found Item</Link>
