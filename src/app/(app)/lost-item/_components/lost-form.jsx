@@ -1,7 +1,8 @@
 "use client"
-import { useActionState } from "react";
-import { Button, DateInput, Input, Select, SelectItem } from "@heroui/react";
+import { useActionState, useState } from "react";
+import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
 import { createLostItem } from "../action";
+import Image from "next/image";
 
 export const categories = [
     {key:"electronic", label:"Electronic"},
@@ -12,6 +13,14 @@ export const categories = [
 
 export default function LostForm() {
     const [state, formAction, pending] = useActionState(createLostItem, null);
+    const [preview, setPreview] = useState(null);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPreview(URL.createObjectURL(file));
+        }
+    };
 
     return (
         <form action={formAction} className="flex flex-col gap-4 p-4 max-w-md mx-auto">
@@ -25,13 +34,15 @@ export default function LostForm() {
                 ))}
             </Select>
 
-            <DateInput label="Timeframe" name="timeframe" variant="border" className="rounded-lg" required
+            <DatePicker label="Timeframe" name="timeframe" variant="border" className="rounded-lg" required
             />
 
             <Input label="Location" placeholder="Location" name="location" variant="border" className="rounded-lg" required
             />
 
-            <Input label="File" type="file" name="file" variant="border" className="rounded-lg" />
+            <Input label="File" type="file" name="file" variant="border" className="rounded-lg" accept="image/*" onChange={handleFileChange} />
+
+            {preview && (<Image src={preview} alt="preview" width={200} height={200} />)}
 
             <Button isLoading={pending} type="submit">Submit</Button>
             {state?.success === false && (<div className="justify-center text-red-500">{state.message}</div>)}

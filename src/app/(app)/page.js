@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <div className="py-8">
+    <div>
       <div>Main</div>
       <div>Content</div>
       <div>Flow</div>
