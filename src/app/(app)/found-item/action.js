@@ -1,5 +1,6 @@
 "use server";
 
+import { getTags } from "@/libs/aitagging";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
@@ -27,7 +28,7 @@ export async function createFoundItem(_, formData) {
     };
   }
 
-  const newLostItem = await prisma.item.create({
+  const newFoundItem = await prisma.item.create({
     data: {
       name,
       type: "FOUND",
@@ -46,6 +47,38 @@ export async function createFoundItem(_, formData) {
   });
 
   await uploadImage({ key: file.name, folder: newFoundItem.id, body: file });
+
+  const imageUrl = `${newFoundItem.id}/${file.name}`;
+
+  const tags = await getTags(imageUrl);
+
+  await Promise.all(
+    Object.entries(tags).map(async ([type, name]) => {
+      if (name.toLowerCase() !== "unknown") {
+        let tag = await prisma.tag.findUnique({
+          where: {
+            name,
+          },
+        });
+
+        if (!tag) {
+          tag = await prisma.tag.create({
+            data: {
+              name,
+              type,
+            },
+          });
+        }
+
+        await prisma.itemTag.create({
+          data: {
+            itemId: newFoundItem.id,
+            tagId: tag.id,
+          },
+        });
+      }
+    })
+  );
 
   return {
     success: true,
