@@ -5,12 +5,13 @@ import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
 
-export async function createFoundItem(_, formData) {
+export async function submitFormAction(_, formData) {
   const name = formData.get("name");
   const category = formData.get("category");
   const timeframe = new Date(formData.get("timeframe"));
   const location = formData.get("location");
   const file = formData.get("file");
+  const type = formData.get("type");
 
   const session = await auth();
 
@@ -31,7 +32,7 @@ export async function createFoundItem(_, formData) {
   const newFoundItem = await prisma.item.create({
     data: {
       name,
-      type: "FOUND",
+      type,
       category,
       timeframe,
       location,

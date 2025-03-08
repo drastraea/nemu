@@ -1,7 +1,7 @@
 "use client";
 import { useActionState, useState } from "react";
 import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
-import { createFoundItem } from "../action";
+import { submitFormAction } from "./submit-form-action";
 import Image from "next/image";
 
 export const categories = [
@@ -11,8 +11,8 @@ export const categories = [
   { key: "other", label: "Others" },
 ];
 
-export default function FoundForm() {
-  const [state, formAction, pending] = useActionState(createFoundItem, null);
+export default function SubmitForm({type}) {
+  const [state, formAction, pending] = useActionState(submitFormAction, null);
   const [preview, setPreview] = useState(null);
 
   const handleFileChange = (e) => {
@@ -60,7 +60,7 @@ export default function FoundForm() {
 
       <Input
         label="Location"
-        placeholder="Location"
+        placeholder="Place, City"
         name="location"
         variant="border"
         className="rounded-lg"
@@ -76,6 +76,7 @@ export default function FoundForm() {
         accept="image/*"
         onChange={handleFileChange}
       />
+      <Input name="type" type="hidden" defaultValue={type} hidden/>
 
       {preview && (<Image src={preview} alt="Upload Photo Preview" width={400} height={400} className="object-cover rounded-lg"/>)}
 

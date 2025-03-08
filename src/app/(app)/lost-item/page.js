@@ -1,10 +1,10 @@
-import LostForm from "./_components/lost-form";
+import SubmitForm from "../_components/submit-form";
 
 export default function LostPage() {
     return (
         <div>
             <h1 className="text-lg font-semibold">Submit Lost Item</h1>
-            <LostForm />
+            <SubmitForm type="LOST" />
         </div>
     );
 }
