@@ -1,6 +1,6 @@
 "use server";
 
-import { getTags } from "@/libs/aitagging";
+import { getTags } from "@/libs/ai-process";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
