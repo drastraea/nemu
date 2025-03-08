@@ -4,22 +4,24 @@ import { getTags } from "@/libs/ai-process";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
+import { getCoordinates } from "@/libs/location";
 
-export async function createFoundItem(_, formData) {
-  const name = formData.get("name");
-  const category = formData.get("category");
-  const timeframe = new Date(formData.get("timeframe"));
-  const location = formData.get("location");
-  const file = formData.get("file");
-
+export async function submitFormAction(_, formData) {
   const session = await auth();
 
   if (!session) {
     return {
       success: false,
-      message: "Please login to submit a found item.",
+      message: "Please login to submit.",
     };
   }
+
+  const name = formData.get("name");
+  const category = formData.get("category");
+  const timeframe = new Date(formData.get("timeframe"));
+  const location = formData.get("location");
+  const file = formData.get("file");
+  const type = formData.get("type");
 
   if (!name || !category || !timeframe || !location) {
     return {
@@ -28,13 +30,24 @@ export async function createFoundItem(_, formData) {
     };
   }
 
+  const coordinates = await getCoordinates(location);
+
+  if (!coordinates) {
+    return {
+      success: false,
+      message: "Location not found. please enter a valid place.",
+    };
+  }
+
   const newFoundItem = await prisma.item.create({
     data: {
       name,
-      type: "FOUND",
+      type,
       category,
       timeframe,
       location,
+      latitude: coordinates.lat,
+      longitude: coordinates.lon,
       user: { connect: { id: session.user.id } },
     },
   });
@@ -82,6 +95,6 @@ export async function createFoundItem(_, formData) {
 
   return {
     success: true,
-    message: "Found item submitted to be found.",
+    message: `${type} ITEM SUBMITTED SUCCESSFULLY.`,
   };
 }
