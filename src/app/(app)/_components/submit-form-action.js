@@ -4,8 +4,18 @@ import { getTags } from "@/libs/ai-process";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
+import { getCoordinates } from "@/libs/location";
 
 export async function submitFormAction(_, formData) {
+  const session = await auth();
+
+  if (!session) {
+    return {
+      success: false,
+      message: "Please login to submit.",
+    };
+  }
+
   const name = formData.get("name");
   const category = formData.get("category");
   const timeframe = new Date(formData.get("timeframe"));
@@ -13,19 +23,19 @@ export async function submitFormAction(_, formData) {
   const file = formData.get("file");
   const type = formData.get("type");
 
-  const session = await auth();
-
-  if (!session) {
-    return {
-      success: false,
-      message: "Please login to submit a found item.",
-    };
-  }
-
   if (!name || !category || !timeframe || !location) {
     return {
       success: false,
       message: "Please fill in all fields.",
+    };
+  }
+
+  const coordinates = await getCoordinates(location);
+
+  if (!coordinates) {
+    return {
+      success: false,
+      message: "Location not found. please enter a valid place.",
     };
   }
 
@@ -36,6 +46,8 @@ export async function submitFormAction(_, formData) {
       category,
       timeframe,
       location,
+      latitude: coordinates.lat,
+      longitude: coordinates.lon,
       user: { connect: { id: session.user.id } },
     },
   });
@@ -83,6 +95,6 @@ export async function submitFormAction(_, formData) {
 
   return {
     success: true,
-    message: "Found item submitted to be found.",
+    message: `${type} ITEM SUBMITTED SUCCESSFULLY.`,
   };
 }
