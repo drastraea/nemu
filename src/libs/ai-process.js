@@ -29,11 +29,11 @@ export async function getTags(image) {
     ],
   });
 
-  const result = completions.choices[0].message.content;
-  const cleanedResponse = result.replace(/```[\w]*\n|```$/g, "");
-  const parsedResult = JSON.parse(cleanedResponse);
+  const responseResult = completions.choices[0].message.content;
+  const cleanedResponse = responseResult.replace(/```[\w]*\n|```$/g, "");
+  const result = JSON.parse(cleanedResponse);
 
-  return parsedResult;
+  return result;
 }
 
 export async function matchLostItem(submittedItem) {
@@ -117,7 +117,8 @@ export async function matchLostItem(submittedItem) {
   });
 
   const responseResult = aiResponse.choices[0].message.content;
-  const result = JSON.parse(responseResult)
+  const cleanedResponse = responseResult.replace(/```[\w]*\n|```$/g, "");
+  const result = JSON.parse(cleanedResponse)
 
   return result;
 }
