@@ -1,6 +1,7 @@
 "use server";
 
-import { getTags } from "@/libs/aitagging";
+import { matchLostItem } from "@/libs/ai-process";
+import { getTags } from "@/libs/ai-process";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
@@ -79,6 +80,8 @@ export async function createLostItem(_, formData) {
       }
     })
   );
+
+  const aiMatching = await matchLostItem(newLostItem);
 
   return {
     success: true,
