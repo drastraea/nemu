@@ -80,17 +80,7 @@ export async function matchLostItem(submittedItem) {
     },
   });
 
-  const contents = JSON.stringify({
-    matchItems,
-    potentialMatches: potentialMatches.map(match => ({
-      id: match.id,
-      name: match.name,
-      location: match.location,
-      category: match.category,
-      timeframe: new Date(match.timeframe).toISOString(),
-      tags: match.itemTags.map(itemTag => itemTag.tag.name),
-    }))
-  });
+  if (!potentialMatches) return null;
 
   const aiRequest = JSON.stringify({
     lostItem: {
@@ -126,7 +116,8 @@ export async function matchLostItem(submittedItem) {
     ]
   });
 
-  const result = aiResponse.choices[0].message.content;
+  const responseResult = aiResponse.choices[0].message.content;
+  const result = JSON.parse(responseResult)
 
-  return JSON.parse(result);
+  return result;
 }
