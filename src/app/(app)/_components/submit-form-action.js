@@ -1,6 +1,6 @@
 "use server";
 
-import { getTags } from "@/libs/ai-process";
+import { getTags, matchLostItem } from "@/libs/ai-process";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
@@ -8,93 +8,86 @@ import { getCoordinates } from "@/libs/location";
 
 export async function submitFormAction(_, formData) {
   const session = await auth();
+  if (!session) return { success: false, message: "Please login to submit." };
 
-  if (!session) {
-    return {
-      success: false,
-      message: "Please login to submit.",
-    };
-  }
+  const itemData = extractFormData(formData);
+  if (!validateFormData(itemData)) return { success: false, message: "Please fill in all fields." };
 
-  const name = formData.get("name");
-  const category = formData.get("category");
-  const timeframe = new Date(formData.get("timeframe"));
-  const location = formData.get("location");
-  const file = formData.get("file");
-  const type = formData.get("type");
+  const coordinates = await getCoordinates(itemData.location);
+  if (!coordinates) return { success: false, message: "Location not found. Please enter a valid place." };
 
-  if (!name || !category || !timeframe || !location) {
-    return {
-      success: false,
-      message: "Please fill in all fields.",
-    };
-  }
+  const newItem = await createNewItem(itemData, coordinates, session.user.id);
+  const imageUrl = await handleImageUpload(formData.get("file"), newItem.id);
+  await processTags(imageUrl, newItem.id);
+  await checkMatch(newItem, imageUrl);
 
-  const coordinates = await getCoordinates(location);
+  return { success: true, message: `${itemData.type} ITEM SUBMITTED SUCCESSFULLY.` };
+}
 
-  if (!coordinates) {
-    return {
-      success: false,
-      message: "Location not found. please enter a valid place.",
-    };
-  }
+function extractFormData(formData) {
+  return {
+    name: formData.get("name"),
+    category: formData.get("category"),
+    timeframe: new Date(formData.get("timeframe")),
+    location: formData.get("location"),
+    type: formData.get("type"),
+  };
+}
 
-  const newFoundItem = await prisma.item.create({
+function validateFormData({ name, category, timeframe, location }) {
+  return name && category && timeframe && location;
+}
+
+async function createNewItem(itemData, coordinates, userId) {
+  return await prisma.item.create({
     data: {
-      name,
-      type,
-      category,
-      timeframe,
-      location,
+      ...itemData,
       latitude: coordinates.lat,
       longitude: coordinates.lon,
-      user: { connect: { id: session.user.id } },
+      user: { connect: { id: userId } },
     },
   });
+}
 
-  await prisma.image.create({
-    data: {
-      url: file.name,
-      itemId: newFoundItem.id,
-    },
-  });
+async function handleImageUpload(file, itemId) {
+  if (!file) return null;
+  await prisma.image.create({ data: { url: file.name, itemId } });
+  await uploadImage({ key: file.name, folder: itemId, body: file });
+  return `${itemId}/${file.name}`;
+}
 
-  await uploadImage({ key: file.name, folder: newFoundItem.id, body: file });
-
-  const imageUrl = `${newFoundItem.id}/${file.name}`;
-
+async function processTags(imageUrl, itemId) {
   const tags = await getTags(imageUrl);
-
   await Promise.all(
     Object.entries(tags).map(async ([type, name]) => {
-      if (name.toLowerCase() !== "unknown") {
-        let tag = await prisma.tag.findUnique({
-          where: {
-            name,
-          },
-        });
-
-        if (!tag) {
-          tag = await prisma.tag.create({
-            data: {
-              name,
-              type,
-            },
-          });
-        }
-
-        await prisma.itemTag.create({
-          data: {
-            itemId: newFoundItem.id,
-            tagId: tag.id,
-          },
-        });
-      }
+      if (name.toLowerCase() === "unknown") return;
+      let tag = await prisma.tag.findUnique({ where: { name } });
+      if (!tag) tag = await prisma.tag.create({ data: { name, type } });
+      await prisma.itemTag.create({ data: { itemId, tagId: tag.id } });
     })
   );
+}
 
-  return {
-    success: true,
-    message: `${type} ITEM SUBMITTED SUCCESSFULLY.`,
-  };
+async function checkMatch(singleItem, imageUrl) {
+  const matchingStatus = await matchLostItem(singleItem);
+  if (!matchingStatus || matchingStatus.matching_score < 0.5) return;
+
+  if (matchingStatus.matching_score < 0.8) {
+    const pairImage = await prisma.item.findFirst({
+      where: { id: matchingStatus.item_id },
+      include: { images: true },
+    });
+    if (!pairImage || !pairImage.images.length) return;
+    const pairImageUrl = `${pairImage.images[0].itemId}/${pairImage.images[0].url}`;
+    const newScore = await checkMatchImages(imageUrl, pairImageUrl);
+    if (newScore >= 0.8) await createMatch(singleItem.id, matchingStatus.item_id, newScore);
+  } else {
+    await createMatch(singleItem.id, matchingStatus.item_id, matchingStatus.matching_score);
+  }
+}
+
+async function createMatch(lostItemId, foundItemId, score) {
+  return await prisma.match.create({
+    data: { lostItemId, foundItemId, score, status: "PENDING" },
+  });
 }

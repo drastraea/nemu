@@ -29,11 +29,11 @@ export async function getTags(image) {
     ],
   });
 
-  const result = completions.choices[0].message.content;
-  const cleanedResponse = result.replace(/```[\w]*\n|```$/g, "");
-  const parsedResult = JSON.parse(cleanedResponse);
+  const responseResult = completions.choices[0].message.content;
+  const cleanedResponse = responseResult.replace(/```[\w]*\n|```$/g, "");
+  const result = JSON.parse(cleanedResponse);
 
-  return parsedResult;
+  return result;
 }
 
 export async function matchLostItem(submittedItem) {
@@ -117,7 +117,43 @@ export async function matchLostItem(submittedItem) {
   });
 
   const responseResult = aiResponse.choices[0].message.content;
-  const result = JSON.parse(responseResult)
+  const cleanedResponse = responseResult.replace(/```[\w]*\n|```$/g, "");
+  const result = JSON.parse(cleanedResponse)
 
   return result;
+}
+
+export async function checkMatchImages(imageUrl1, imageUrl2) {
+  const url = `https://pub-4a28b0907aff4bb4a7bc257eaa71091d.r2.dev/nemu`;
+  const image1 = `${url}/${imageUrl1}`;
+  const image2 = `${url}/${imageUrl2}`;
+
+  const completions = await openai.chat.completions.create({
+    model: "google/gemini-2.0-flash-exp:free",
+
+    messages: [
+      {
+        role: "system",
+        content: IMAGE_COMPARE_PROMPT,
+      },
+      {
+        role: "user",
+        content: [
+          { type: "image_url", image_url: { url: image1 } },
+          { type: "image_url", image_url: { url: image2 } },
+        ],
+      },
+    ],
+  });
+
+  const responseResult = completions.choices[0].message.content;
+
+  try {
+    const cleanedResponse = responseResult.replace(/```[\w]*\n|```$/g, "");
+    const result = JSON.parse(cleanedResponse);
+    return result;
+  } catch (error) {
+    console.error("Error parsing AI response:", error);
+    return null;
+  }
 }
