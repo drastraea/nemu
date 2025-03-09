@@ -72,17 +72,18 @@ async function checkMatch(singleItem, imageUrl) {
   const matchingStatus = await matchLostItem(singleItem);
   if (!matchingStatus || matchingStatus.matching_score < 0.5) return;
 
-  if (matchingStatus.matching_score < 0.8) {
-    const pairImage = await prisma.item.findFirst({
-      where: { id: matchingStatus.item_id },
-      include: { images: true },
-    });
-    if (!pairImage || !pairImage.images.length) return;
-    const pairImageUrl = `${pairImage.images[0].itemId}/${pairImage.images[0].url}`;
-    const newScore = await checkMatchImages(imageUrl, pairImageUrl);
-    if (newScore >= 0.8) await createMatch(singleItem.id, matchingStatus.item_id, newScore);
-  } else {
-    await createMatch(singleItem.id, matchingStatus.item_id, matchingStatus.matching_score);
+  const pairImage = await prisma.item.findFirst({
+    where: { id: matchingStatus.item_id },
+    include: { images: true },
+  });
+  if (!pairImage || !pairImage.images.length) return;
+
+  const pairImageUrl = `${pairImage.images[0].itemId}/${pairImage.images[0].url}`;
+  const imageComparison = await checkMatchImages(imageUrl, pairImageUrl);
+
+  const finalScore = (matchingStatus.matching_score + imageComparison.matching_score) / 2;
+  if (finalScore >= 0.8) {
+    await createMatch(singleItem.id, potentialMatch.id, finalScore);
   }
 }
 
