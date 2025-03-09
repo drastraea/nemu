@@ -47,3 +47,23 @@ EXAMPLE OUTPUT:
 VALIDATION:
 Check if the response contain triple backsticks \`\`\`json, please remove it out.
 `;
+
+export const IMAGE_COMPARE_PROMPT = `
+"Compare two images and determine their similarity. Provide the following details: \n" +
+
+"- similarity_score: A number between 0 and 1 indicating how similar the images are (1 being identical).\n" +
+"- differences: Key visual differences between the two images (e.g., color variations, missing parts, scratches, etc.).\n" +
+"- confidence_level: A descriptive assessment of the comparison (e.g., 'high', 'moderate', 'low').\n" +
+
+IMPORTANT:
+The output should only be valid JSON, without any triple backticks and additional text.
+
+EXAMPLE OUTPUT:
+{
+    "matching_score": number,
+    "confidence_level": string
+}
+
+VALIDATION:
+Check if the response contains triple backticks \`\`\`json, please remove them.
+`;

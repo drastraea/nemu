@@ -1,4 +1,4 @@
-import { TAGGING_PROMPT, MATCHING_PROMPT } from "@/app/prompts/systemPrompt";
+import { TAGGING_PROMPT, MATCHING_PROMPT, IMAGE_COMPARE_PROMPT } from "@/app/prompts/systemPrompt";
 import openai from "@/utils/openai";
 import prisma from "./db";
 import { calculateDistance } from "./location";
