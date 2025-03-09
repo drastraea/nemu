@@ -1,6 +1,6 @@
 "use server";
 
-import { getTags } from "@/libs/ai-process";
+import { getTags, matchLostItem } from "@/libs/ai-process";
 import { auth } from "@/libs/auth";
 import prisma from "@/libs/db";
 import { uploadImage } from "@/libs/file-store";
@@ -8,7 +8,6 @@ import { getCoordinates } from "@/libs/location";
 
 export async function submitFormAction(_, formData) {
   const session = await auth();
-
   if (!session) {
     return {
       success: false,
@@ -93,8 +92,69 @@ export async function submitFormAction(_, formData) {
     })
   );
 
+  await checkMatch(newFoundItem, imageUrl);
+
   return {
     success: true,
     message: `${type} ITEM SUBMITTED SUCCESSFULLY.`,
   };
+}
+
+function extractFormData(formData) {
+  return {
+    name: formData.get("name"),
+    category: formData.get("category"),
+    timeframe: new Date(formData.get("timeframe")),
+    location: formData.get("location"),
+    type: formData.get("type"),
+  };
+}
+
+async function checkMatch(singleItem, imageUrl) {
+  //this item is literally single, it needs a pair :(
+  const matchingStatus = await matchLostItem(singleItem);
+  if (!matchingStatus) return null;
+
+  const matchingScore = matchingStatus.matching_score
+  if (matchingScore < 0.5) return null;
+
+  if (matchingScore >= 0.5 && matchingScore < 0.8) {
+    const pairImage = await prisma.item.findFirst({
+      where: {
+        id: matchingScore.item_id,
+      },
+      include: {
+        images: true
+      }
+    });
+
+    console.log("Lost Item ID:", singleItem.id);
+    console.log("Found Item ID:", matchingStatus.item_id);
+
+    if (!pairImage || !pairImage.images.length) return null;
+
+    const pairImageUrl = `${pairImage.images[0].itemId}/${pairImage.images[0].url}`
+
+    const newScore = await checkMatchImages(imageUrl, pairImageUrl);
+    if (newScore >= 0.8) {
+      await createMatch(singleItem.id, matchingStatus.item_id, newScore)
+      return { success: true, message: "Found a match for your item!" };
+    }
+  }
+
+  if (matchingScore >= 0.8) {
+    await createMatch(singleItem.id, matchingStatus.item_id, matchingScore)
+    return { success: true, message: "Found a match for your item!" };
+  }
+}
+
+async function createMatch(lostItemId, foundItemId, score) {
+  return await prisma.match.create({
+    data: {
+      lostItemId,
+      foundItemId,
+      score,
+      status: "PENDING"
+    }
+  })
 }
