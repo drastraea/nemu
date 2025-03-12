@@ -1,39 +1,60 @@
-import { Button } from '@heroui/react'
-import Link from 'next/link'
-import { AvatarMenu } from './avatar-menu'
-import { auth } from '@/libs/auth'
+import { AvatarMenu } from "./avatar-menu";
+import { auth } from "@/libs/auth";
+import Image from "next/image";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+} from "@heroui/react";
 
 export const Nav = async () => {
-  const session = await auth()
+  const session = await auth();
 
   return (
-    <div className="bg-black text-white py-2 px-4 lg:mx-40 flex justify-between items-center rounded-b-lg">
-      <Link className="font-mono tracking-wide cursor-pointer" href="/">
-        NEMU
-      </Link>
-      <div className="flex space-x-4">
-        <Link href="/lost-item" className="">
-          Lost Item
-        </Link>
-        <Link href="/found-item" className="">
-          Found Item
-        </Link>
-      </div>
-      <div>
-        {session ? (
-          <AvatarMenu session={session} />
-        ) : (
-          <Button
-            as={Link}
-            href="/login"
-            variant="border"
-            radius="sm"
-            className="bg-transparent border-2 border-gray-400 text-white font-semibold"
-          >
-            Login
-          </Button>
-        )}
-      </div>
+    <div className="lg:mx-40">
+      <Navbar height={50} maxWidth="full" className="bg-black rounded-b-lg">
+        <NavbarBrand>
+          <Link href="/">
+            <Image
+              alt="nemu logo"
+              src="/images/nemu-w.png"
+              width={70}
+              height={35}
+            />
+          </Link>
+        </NavbarBrand>
+        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+          <NavbarItem>
+            <Link href="/lost-item" className="text-white font-semibold">
+              Lost Item
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link href="/found-item" className="text-white font-semibold">
+              Found Item
+            </Link>
+          </NavbarItem>
+        </NavbarContent>
+        <NavbarContent justify="end">
+          <NavbarItem>
+            {session ? (
+              <AvatarMenu session={session} />
+            ) : (
+              <Button
+                as={Link}
+                href="/login"
+                variant="bordered"
+                className=" text-white font-semibold"
+              >
+                Login
+              </Button>
+            )}
+          </NavbarItem>
+        </NavbarContent>
+      </Navbar>
     </div>
-  )
-}
+  );
+};
