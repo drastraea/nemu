@@ -15,6 +15,20 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Nemu",
   description: "Find your lost items with the power of AI",
+  icons: {
+    icon: [
+      {
+        media: "(prefers-color-scheme: light)",
+        url: "/images/favicon-nemu-light.png",
+        href: "/images/favicon-nemu-light.png",
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        url: "/images/favicon-nemu-dark.png",
+        href: "/images/favicon-nemu-dark.png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {
