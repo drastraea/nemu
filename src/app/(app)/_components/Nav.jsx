@@ -9,8 +9,7 @@ import {
   Button,
 } from '@heroui/react'
 
-export const Nav = (session) => {
-
+export const Nav = ({session}) => {
   return (
     <Navbar
       height={64}
