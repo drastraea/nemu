@@ -9,7 +9,7 @@ import {
   Button,
 } from '@heroui/react'
 
-export const Nav = async () => {
+export const Nav = (session) => {
 
   return (
     <Navbar
