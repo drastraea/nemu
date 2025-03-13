@@ -6,9 +6,9 @@ export default async function Layout({ children }) {
   const session = await auth();
 
   return (
-    <div className="relative">
+    <div className="flex flex-col min-h-screen">
       <Nav session={session} />
-      <main>{children}</main>
+      <main className="flex-grow">{children}</main>
       <Footer />
     </div>
   );
