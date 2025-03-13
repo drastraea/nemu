@@ -1,3 +1,5 @@
+"use server"
+
 import { NavClient } from './nav-client';
 import { auth } from '@/libs/auth';
 
