@@ -69,7 +69,7 @@ export async function submitItemAction(formData) {
 export async function imageProcessingAction(item, imageUrl) {
   const processResult = await processTags(imageUrl, item.id);
 
-  if (processResult) {
+  if (!processResult) {
     return {
       success: false,
       message: "Failed processing tags",
