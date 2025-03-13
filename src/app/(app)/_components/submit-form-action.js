@@ -158,19 +158,18 @@ async function checkMatch(singleItem, imageUrl) {
   const imageComparison = await checkMatchImages(imageUrl, pairImageUrl);
 
   const finalScore =
-    (matchingStatus.matching_score + imageComparison.matching_score) / 2;
+    (matchingStatus.matching_score + imageComparison.similarity_score) / 2;
   if (finalScore >= 0.8) {
-    await createMatch(singleItem.id, matchingStatus.id, finalScore);
     const match = await createMatch(
       singleItem.id,
-      matchingStatus.id,
+      matchingStatus.item_id,
       finalScore
     );
     if (singleItem.type === "LOST") {
       await createNotification(singleItem.userId, match.id);
     } else {
       const item = await prisma.item.findUnique({
-        where: { id: matchingStatus.id, type: "LOST" },
+        where: { id: matchingStatus.item_id, type: "LOST" },
       });
       await createNotification(item.userId, match.id);
     }
