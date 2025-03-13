@@ -13,8 +13,15 @@ export async function submitFormAction(_, formData) {
   const itemData = extractFormData(formData);
   if (!validateFormData(itemData))
     return { success: false, message: "Please fill in all fields." };
+  if (!validateFormData(itemData))
+    return { success: false, message: "Please fill in all fields." };
 
   const coordinates = await getCoordinates(itemData.location);
+  if (!coordinates)
+    return {
+      success: false,
+      message: "Location not found. Please enter a valid place.",
+    };
   if (!coordinates)
     return {
       success: false,
@@ -29,6 +36,61 @@ export async function submitFormAction(_, formData) {
   return {
     success: true,
     message: `${itemData.type} ITEM SUBMITTED SUCCESSFULLY.`,
+  };
+}
+
+export async function submitItemAction(formData) {
+  const session = await auth();
+
+  const response = (success, message, data = undefined) => {
+    return { success, message, data };
+  };
+  if (!session) return response(false, "Please login to submit.");
+
+  const itemData = extractFormData(formData);
+  if (!validateFormData(itemData)) {
+    return response(false, "Please fill in all fields.");
+  }
+
+  const coordinates = await getCoordinates(itemData.location);
+  if (!coordinates) {
+    return response(false, "Location not found. Please enter a valid place.");
+  }
+
+  try {
+    const newItem = await createNewItem(itemData, coordinates, session.user.id);
+    const imageUrl = await handleImageUpload(formData.get("file"), newItem.id);
+    if (!newItem) {
+      return response(false, "Failed insert item");
+    }
+
+    const data = { item: newItem, imageUrl };
+
+    return response(true, "", data);
+  } catch (error) {
+    console.error(`submitItemAction [ERROR]: ${error}`);
+    return null;
+  }
+}
+
+export async function imageProcessingAction(item, imageUrl) {
+  const processResult = await processTags(imageUrl, item.id);
+
+  if (!processResult) {
+    return {
+      success: false,
+      message: "Failed processing tags",
+    };
+  }
+  const matchResult = await checkMatch(item, imageUrl);
+
+  const message = matchResult
+    ? `${item.type} Item submitted successfully and found match item`
+    : "Item submitted successfully";
+
+  return {
+    success: true,
+    message,
   };
 }
 
@@ -65,26 +127,32 @@ async function handleImageUpload(file, itemId) {
 }
 
 async function processTags(imageUrl, itemId) {
-  const tags = await getTags(imageUrl);
-  await Promise.all(
-    Object.entries(tags).map(async ([type, name]) => {
-      if (name.toLowerCase() === "unknown") return;
-      let tag = await prisma.tag.findUnique({ where: { name } });
-      if (!tag) tag = await prisma.tag.create({ data: { name, type } });
-      await prisma.itemTag.create({ data: { itemId, tagId: tag.id } });
-    })
-  );
+  try {
+    const tags = await getTags(imageUrl);
+    await Promise.all(
+      Object.entries(tags).map(async ([type, name]) => {
+        if (name.toLowerCase() === "unknown") return;
+        let tag = await prisma.tag.findUnique({ where: { name } });
+        if (!tag) tag = await prisma.tag.create({ data: { name, type } });
+        await prisma.itemTag.create({ data: { itemId, tagId: tag.id } });
+      })
+    );
+    return true;
+  } catch (error) {
+    console.log(`processTags [ERROR]: ${error}`);
+    return false;
+  }
 }
 
 async function checkMatch(singleItem, imageUrl) {
   const matchingStatus = await matchLostItem(singleItem);
-  if (!matchingStatus || matchingStatus.matching_score < 0.5) return;
+  if (!matchingStatus || matchingStatus.matching_score < 0.5) return false;
 
   const pairImage = await prisma.item.findFirst({
     where: { id: matchingStatus.item_id },
     include: { images: true },
   });
-  if (!pairImage || !pairImage.images.length) return;
+  if (!pairImage || !pairImage.images.length) return false;
 
   const pairImageUrl = `${pairImage.images[0].itemId}/${pairImage.images[0].url}`;
   const imageComparison = await checkMatchImages(imageUrl, pairImageUrl);
@@ -92,20 +160,24 @@ async function checkMatch(singleItem, imageUrl) {
   const finalScore =
     (matchingStatus.matching_score + imageComparison.matching_score) / 2;
   if (finalScore >= 0.8) {
+    await createMatch(singleItem.id, matchingStatus.id, finalScore);
     const match = await createMatch(
       singleItem.id,
       matchingStatus.id,
       finalScore
     );
     if (singleItem.type === "LOST") {
-      await createNotification(singleItem.userId, match);
+      await createNotification(singleItem.userId, match.id);
     } else {
       const item = await prisma.item.findUnique({
         where: { id: matchingStatus.id, type: "LOST" },
       });
       await createNotification(item.userId, match.id);
     }
+    return true;
   }
+
+  return false;
 }
 
 async function createMatch(lostItemId, foundItemId, score) {
