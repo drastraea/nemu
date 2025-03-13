@@ -151,9 +151,21 @@ async function checkMatch(singleItem, imageUrl) {
   const imageComparison = await checkMatchImages(imageUrl, pairImageUrl);
 
   const finalScore =
-    (matchingStatus.matching_score + imageComparison.matching_score) / 2;
+    (matchingStatus.matching_score + imageComparison.similarity_score) / 2;
   if (finalScore >= 0.8) {
-    await createMatch(singleItem.id, matchingStatus.id, finalScore);
+    const match = await createMatch(
+      singleItem.id,
+      matchingStatus.item_id,
+      finalScore
+    );
+    if (singleItem.type === "LOST") {
+      await createNotification(singleItem.userId, match.id);
+    } else {
+      const item = await prisma.item.findUnique({
+        where: { id: matchingStatus.item_id, type: "LOST" },
+      });
+      await createNotification(item.userId, match.id);
+    }
     return true;
   }
 
@@ -163,5 +175,15 @@ async function checkMatch(singleItem, imageUrl) {
 async function createMatch(lostItemId, foundItemId, score) {
   return await prisma.match.create({
     data: { lostItemId, foundItemId, score, status: "PENDING" },
+  });
+}
+
+async function createNotification(userId, matchId) {
+  await prisma.notification.create({
+    data: {
+      userId,
+      matchId,
+      message: "barangmu telah ditemukan",
+    },
   });
 }
