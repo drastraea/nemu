@@ -1,4 +1,5 @@
 import { AvatarMenu } from './avatar-menu'
+import { auth } from '@/libs/auth'
 import Image from 'next/image'
 import {
   Navbar,
@@ -9,7 +10,9 @@ import {
   Button,
 } from '@heroui/react'
 
-export const Nav = ({session}) => {
+export const Nav = async () => {
+  const session = await auth()
+
   return (
     <Navbar
       height={64}
