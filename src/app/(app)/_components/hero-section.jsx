@@ -31,7 +31,7 @@ export const HeroSection = () => {
           </Button>
           <Button
             as={Link}
-            href="/lost-item"
+            href="/found-item"
             size="lg"
             radius="full"
             className="gap-2 bg-white px-8 py-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 border border-default-500"
