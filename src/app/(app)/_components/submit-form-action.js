@@ -13,15 +13,8 @@ export async function submitFormAction(_, formData) {
   const itemData = extractFormData(formData);
   if (!validateFormData(itemData))
     return { success: false, message: "Please fill in all fields." };
-  if (!validateFormData(itemData))
-    return { success: false, message: "Please fill in all fields." };
 
   const coordinates = await getCoordinates(itemData.location);
-  if (!coordinates)
-    return {
-      success: false,
-      message: "Location not found. Please enter a valid place.",
-    };
   if (!coordinates)
     return {
       success: false,
