@@ -83,7 +83,7 @@ async function checkMatch(singleItem, imageUrl) {
 
   const finalScore = (matchingStatus.matching_score + imageComparison.matching_score) / 2;
   if (finalScore >= 0.8) {
-    await createMatch(singleItem.id, potentialMatch.id, finalScore);
+    await createMatch(singleItem.id, matchingStatus.id, finalScore);
   }
 }
 
