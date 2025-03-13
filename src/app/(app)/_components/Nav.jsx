@@ -1,6 +1,6 @@
-import { AvatarMenu } from './avatar-menu'
-import { auth } from '@/libs/auth'
-import Image from 'next/image'
+import { AvatarMenu } from "./avatar-menu";
+import { headers } from "next/headers";
+import Image from "next/image";
 import {
   Navbar,
   NavbarBrand,
@@ -8,55 +8,38 @@ import {
   NavbarItem,
   Link,
   Button,
-} from '@heroui/react'
+} from "@heroui/react";
 
-export const Nav = async () => {
-  const session = await auth()
+export const Nav = () => {
+  const sessionHeader = headers().get("x-user-session");
+  const session = sessionHeader ? JSON.parse(sessionHeader) : null;
 
   return (
-    <Navbar
-      height={64}
-      maxWidth="xl"
-      className="bg-black border-white/10 border-b  "
-    >
+    <Navbar height={64} maxWidth="xl" className="bg-black border-white/10 border-b">
       <NavbarBrand>
         <Link href="/">
-          <Image
-            alt="nemu logo"
-            src="/images/nemu-w.png"
-            width={70}
-            height={35}
-          />
+          <Image alt="nemu logo" src="/images/nemu-w.png" width={70} height={35} />
         </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Link href="/lost-item" className="text-white font-semibold">
-            Lost Item
-          </Link>
+          <Link href="/lost-item" className="text-white font-semibold">Lost Item</Link>
         </NavbarItem>
         <NavbarItem>
-          <Link href="/found-item" className="text-white font-semibold">
-            Found Item
-          </Link>
+          <Link href="/found-item" className="text-white font-semibold">Found Item</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          {session ? (
+          {session?.user ? (
             <AvatarMenu session={session} />
           ) : (
-            <Button
-              as={Link}
-              href="/login"
-              variant="bordered"
-              className=" text-white font-semibold"
-            >
+            <Button as={Link} href="/login" variant="bordered" className="text-white font-semibold">
               Login
             </Button>
           )}
         </NavbarItem>
       </NavbarContent>
     </Navbar>
-  )
-}
+  );
+};
