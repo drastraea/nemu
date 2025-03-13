@@ -1,10 +1,14 @@
-import { TAGGING_PROMPT, MATCHING_PROMPT, IMAGE_COMPARE_PROMPT } from "@/app/prompts/systemPrompt";
+import {
+  TAGGING_PROMPT,
+  MATCHING_PROMPT,
+  IMAGE_COMPARE_PROMPT,
+} from "@/app/prompts/systemPrompt";
 import openai from "@/utils/openai";
 import prisma from "./db";
 import { calculateDistance } from "./location";
 
 export async function getTags(image) {
-  const url = `https://pub-4a28b0907aff4bb4a7bc257eaa71091d.r2.dev/nemu`;
+  const url = process.env.R2_S3_DEV_URL;
   const imageUrl = `${url}/${image}`;
 
   const completions = await openai.chat.completions.create({
@@ -45,9 +49,9 @@ export async function matchLostItem(submittedItem) {
       itemTags: {
         include: {
           tag: true,
-        }
+        },
       },
-    }
+    },
   });
 
   const type = submittedItem.type === "LOST" ? "FOUND" : "LOST";
@@ -56,26 +60,36 @@ export async function matchLostItem(submittedItem) {
   const lon = matchItems.longitude;
 
   if (!lat || !lon) {
-    return { success: false, message: "Location coordinates missing for lost item." };
+    return {
+      success: false,
+      message: "Location coordinates missing for lost item.",
+    };
   }
-
 
   const potentialMatches = await prisma.item.findMany({
     where: {
       type,
       category: matchItems.category,
       timeframe: {
-        gte: new Date(new Date(matchItems.timeframe).setDate(matchItems.timeframe.getDate() - 7)).toISOString(),
-        lte: new Date(new Date(matchItems.timeframe).setDate(matchItems.timeframe.getDate() + 7)).toISOString(),
+        gte: new Date(
+          new Date(matchItems.timeframe).setDate(
+            matchItems.timeframe.getDate() - 7
+          )
+        ).toISOString(),
+        lte: new Date(
+          new Date(matchItems.timeframe).setDate(
+            matchItems.timeframe.getDate() + 7
+          )
+        ).toISOString(),
       },
       latitude: { gte: lat - 0.1, lte: lat + 0.1 },
-      longitude: { gte: lon - 0.1, lte: lon + 0.1 }
+      longitude: { gte: lon - 0.1, lte: lon + 0.1 },
     },
     include: {
       itemTags: {
         include: {
-          tag: true
-        }
+          tag: true,
+        },
       },
     },
   });
@@ -89,17 +103,17 @@ export async function matchLostItem(submittedItem) {
       category: matchItems.category,
       location: matchItems.location,
       timeframe: new Date(matchItems.timeframe).toISOString(),
-      tags: matchItems.itemTags.map(tag => tag.tag.name),
+      tags: matchItems.itemTags.map((tag) => tag.tag.name),
     },
-    potentialMatches: potentialMatches.map(match => ({
+    potentialMatches: potentialMatches.map((match) => ({
       id: match.id,
       name: match.name,
       category: match.category,
       location: match.location,
       distance_km: calculateDistance(lat, lon, match.latitude, match.longitude), // Accurate distance
       timeframe: new Date(match.timeframe).toISOString(),
-      tags: match.itemTags.map(tag => tag.tag.name),
-    }))
+      tags: match.itemTags.map((tag) => tag.tag.name),
+    })),
   });
 
   const aiResponse = await openai.chat.completions.create({
@@ -107,24 +121,24 @@ export async function matchLostItem(submittedItem) {
     messages: [
       {
         role: "system",
-        content: MATCHING_PROMPT
+        content: MATCHING_PROMPT,
       },
       {
         role: "user",
         content: aiRequest,
-      }
-    ]
+      },
+    ],
   });
 
   const responseResult = aiResponse.choices[0].message.content;
   const cleanedResponse = responseResult.replace(/```[\w]*\n|```$/g, "");
-  const result = JSON.parse(cleanedResponse)
+  const result = JSON.parse(cleanedResponse);
 
   return result;
 }
 
 export async function checkMatchImages(imageUrl1, imageUrl2) {
-  const url = `https://pub-4a28b0907aff4bb4a7bc257eaa71091d.r2.dev/nemu`;
+  const url = process.env.R2_S3_DEV_URL;
   const image1 = `${url}/${imageUrl1}`;
   const image2 = `${url}/${imageUrl2}`;
 
