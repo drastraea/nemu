@@ -9,6 +9,9 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    NEXT_PUBLIC_R2_S3_DEV_URL: process.env.R2_S3_DEV_URL,
+  },
 };
 
 export default nextConfig;
