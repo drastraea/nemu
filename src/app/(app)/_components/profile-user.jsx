@@ -33,7 +33,7 @@ export const ProfileUser = async () => {
       <div className="flex justify-start items-center space-x-4">
         <Avatar
           size={96}
-          name={session.user.email}
+          name={session.user.name}
           variant="beam"
           colors={['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90']}
         />

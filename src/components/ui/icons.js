@@ -339,3 +339,45 @@ export function FileUpload() {
     </svg>
   );
 }
+
+export function ImageIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 16 16"
+      className="mx-auto h-12 w-12 mb-4"
+    >
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M5 3a2 2 0 1 0-.001 4.001A2 2 0 0 0 5 3M4 5a1 1 0 1 1 2 0a1 1 0 0 1-2 0"
+        clipRule="evenodd"
+      ></path>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M3.5 1A2.5 2.5 0 0 0 1 3.5v9A2.5 2.5 0 0 0 3.5 15h9a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 12.5 1zM14 3.5v6.79l-3.15-3.15a.5.5 0 0 0-.707 0l-6.84 6.84a1.505 1.505 0 0 1-1.31-1.49v-9a1.5 1.5 0 0 1 1.5-1.5h9a1.5 1.5 0 0 1 1.5 1.5zM12.5 14H4.71l5.79-5.79l3.5 3.5v.793a1.5 1.5 0 0 1-1.5 1.5z"
+        clipRule="evenodd"
+      ></path>
+    </svg>
+  );
+}
+
+export function LeftArrowIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      className="w-10 h-10 flex-shrink-0"
+    >
+      <path
+        fill="currentColor"
+        d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z"
+      ></path>
+    </svg>
+  );
+}
