@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
+import { useState } from "react"
 import {
   addToast,
   Button,
@@ -11,14 +11,14 @@ import {
   Input,
   Select,
   SelectItem,
-} from '@heroui/react'
-import { imageProcessingAction, submitItemAction } from './submit-form-action'
+} from "@heroui/react"
+import { imageProcessingAction, submitItemAction } from "./submit-form-action"
 
 export const categories = [
-  { key: 'electronic', label: 'Electronic' },
-  { key: 'clothing', label: 'Clothing' },
-  { key: 'accessories', label: 'Accessories' },
-  { key: 'other', label: 'Others' },
+  { key: "electronic", label: "Electronic" },
+  { key: "clothing", label: "Clothing" },
+  { key: "accessories", label: "Accessories" },
+  { key: "other", label: "Others" },
 ]
 
 export default function SubmitForm({ type, onFileChange, onSubmitSuccess }) {
@@ -32,9 +32,9 @@ export default function SubmitForm({ type, onFileChange, onSubmitSuccess }) {
     const resultItem = await submitItemAction(formData)
     if (!resultItem.success) {
       addToast({
-        title: 'Failed insert item',
+        title: "Failed insert item",
         description: resultItem.message,
-        color: 'danger',
+        color: "danger",
       })
       setIsLoading(false)
       return
@@ -47,17 +47,17 @@ export default function SubmitForm({ type, onFileChange, onSubmitSuccess }) {
     setIsLoading(false)
     if (!imageProcessing.success) {
       addToast({
-        title: 'Failed processing image',
+        title: "Failed processing image",
         description: resultItem.message,
-        color: 'danger',
+        color: "danger",
       })
       return
     }
 
     addToast({
-      title: 'Success processing image',
+      title: "Success processing image",
       description: imageProcessing.message,
-      color: 'success',
+      color: "success",
     })
 
     formEvent.reset()

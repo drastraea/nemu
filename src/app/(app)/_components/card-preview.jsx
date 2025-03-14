@@ -1,6 +1,6 @@
-import { ImageIcon } from '@/components/ui/icons'
-import { Card, CardBody, CardHeader } from '@heroui/react'
-import Image from 'next/image'
+import { ImageIcon } from "@/components/ui/icons"
+import { Card, CardBody, CardHeader } from "@heroui/react"
+import Image from "next/image"
 
 export const CardPreview = ({ preview }) => {
   return (
