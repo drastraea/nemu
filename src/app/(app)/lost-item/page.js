@@ -16,6 +16,13 @@ export default function LostPage() {
     }
   }
 
+  const resetPreview = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview)
+    }
+    setPreview(null)
+  }
+
   return (
     <div className="container max-w-6xl mx-auto pt-8 pb-24 px-4 space-y-6">
       <Link href="/" className="flex items-center space-x-1">
@@ -23,7 +30,7 @@ export default function LostPage() {
         <h3 className="text-2xl font-semibold ">Back</h3>
       </Link>
       <div className="grid md:grid-cols-2 gap-8">
-        <SubmitForm type="LOST" onFileChange={handleFileChange} />
+        <SubmitForm type="LOST" onFileChange={handleFileChange} onSubmitSuccess={resetPreview} />
         <CardPreview preview={preview} />
       </div>
     </div>

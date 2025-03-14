@@ -21,7 +21,7 @@ export const categories = [
   { key: 'other', label: 'Others' },
 ]
 
-export default function SubmitForm({ type, onFileChange }) {
+export default function SubmitForm({ type, onFileChange, onSubmitSuccess }) {
   const [isLoading, setIsLoading] = useState(false)
 
   const onSubmit = async (e) => {
@@ -59,6 +59,12 @@ export default function SubmitForm({ type, onFileChange }) {
       description: imageProcessing.message,
       color: 'success',
     })
+
+    formEvent.reset()
+
+    if (onSubmitSuccess) {
+      onSubmitSuccess()
+    }
   }
 
   return (
