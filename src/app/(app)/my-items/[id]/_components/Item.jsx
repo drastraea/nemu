@@ -5,6 +5,11 @@ import moment from "moment";
 
 const BASE_URL = process.env.NEXT_PUBLIC_R2_S3_DEV_URL;
 
+export const TimeLocation = ({ date, place }) => {
+    const timeframe = moment(date).format("DD MMMM YYYY");
+    return <p>{timeframe} - {place}</p>;
+};
+
 export const Item = ({ item, match }) => {
     const [progress, setProgress] = useState(0);
     const [stage, setStage] = useState(0);
@@ -48,17 +53,17 @@ export const Item = ({ item, match }) => {
                 </div>
                 <div className="space-y-4">
                     <h1 className="text-3xl font-bold text-center">{item.name}</h1>
-                    <p>{moment(item.timeframe).format("DD MMMM YYYY")} - {item.location}</p>
+                    <TimeLocation date={item.timeframe} place={item.location}/>
                 </div>
             </div>
 
 
             {item.asLostItem?.length > 0 ? (
                 <div className="text-lg font-semibold">
-                    {stage === 0 && <p>Mencari barang...</p>}
+                    {stage === 0 && <p>🔍 Searching for match...</p>}
                     {stage === 1 && (
                         <>
-                            <p>Mencocokkan barang...</p>
+                            <p>🔄 Matching item...</p>
                             <motion.div 
                                 className="w-full bg-gray-200 rounded-full h-4 mt-2"
                                 initial={{ width: "0%" }}
@@ -72,10 +77,10 @@ export const Item = ({ item, match }) => {
                             </motion.div>
                         </>
                     )}
-                    {stage === 2 && <p className="mt-2">Barangmu telah ditemukan! Tingkat Kecocokan: {score.toFixed(2)}%</p>}
+                    {stage === 2 && <p className="mt-2">✅ Match found! Similarity Score: {score.toFixed(2)}%</p>}
                 </div>
             ) : (
-                <p>Barang belum ditemukan</p>
+                <p>Item Found!</p>
             )}
 
 
@@ -101,7 +106,7 @@ export const Item = ({ item, match }) => {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold text-center">{match.name}</h1>
-                        <p>{moment(match.timeframe).format("DD MMMM YYYY")} - {match.location}</p>
+                        <TimeLocation date={match.timeframe} place={match.location}/>
                     </div>
                 </motion.div>
             )}
