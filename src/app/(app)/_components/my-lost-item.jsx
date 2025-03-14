@@ -1,6 +1,8 @@
 import { auth } from '@/libs/auth'
 import prisma from '@/libs/db'
+import { Button } from '@heroui/react'
 import moment from 'moment'
+import Link from 'next/link'
 
 export const MyLostItem = async () => {
   const session = await auth()
@@ -41,6 +43,7 @@ export const MyLostItem = async () => {
                   {moment(item.timeframe).format('DD MMMM YYYY')} -{' '}
                   {item.location}
                 </p>
+                <Button as={Link} variant="light" href={`/my-items/${item.id}`}>Status</Button>
               </div>
             </div>
           )
