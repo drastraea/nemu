@@ -41,8 +41,13 @@ export async function submitItemAction(formData) {
   if (!session) return response(false, "Please login to submit.");
 
   const itemData = extractFormData(formData);
+  const image = formData.get("file");
+
   if (!validateFormData(itemData)) {
     return response(false, "Please fill in all fields.");
+  }
+  if (image.size === 0) {
+    return response(false, "Please select the image");
   }
 
   const coordinates = await getCoordinates(itemData.location);
@@ -52,7 +57,7 @@ export async function submitItemAction(formData) {
 
   try {
     const newItem = await createNewItem(itemData, coordinates, session.user.id);
-    const imageUrl = await handleImageUpload(formData.get("file"), newItem.id);
+    const imageUrl = await handleImageUpload(image, newItem.id);
     if (!newItem) {
       return response(false, "Failed insert item");
     }
@@ -62,7 +67,7 @@ export async function submitItemAction(formData) {
     return response(true, "", data);
   } catch (error) {
     console.error(`submitItemAction [ERROR]: ${error}`);
-    return null;
+    return response(false, "Failed submit item");
   }
 }
 
