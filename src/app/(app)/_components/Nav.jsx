@@ -6,11 +6,11 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
   Button,
 } from "@heroui/react";
 import { NotificationBadge } from "./notification-badge";
 import { getNotificationsAction } from "../_actions/notificationAction";
+import Link from "next/link";
 
 export const Nav = async () => {
   const session = await auth();
