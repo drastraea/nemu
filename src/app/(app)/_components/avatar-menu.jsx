@@ -12,7 +12,6 @@ import { logoutAction } from "../_actions/logoutAction";
 import {
   ListIcon,
   LogoutIcon,
-  SettingIcon,
 } from "@/components/ui/icons";
 
 const avatarColors = ["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"];
@@ -39,9 +38,6 @@ export const AvatarMenu = ({ session }) => {
         </DropdownItem>
         <DropdownItem key="my-lost-item" as={Link} href="/my-items" startContent={<ListIcon />}>
           My Lost Item
-        </DropdownItem>
-        <DropdownItem key="setting" as={Link} href="/" startContent={<SettingIcon />}>
-          Settings
         </DropdownItem>
         <DropdownItem
           key="logout"
