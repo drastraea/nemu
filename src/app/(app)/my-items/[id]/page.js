@@ -2,6 +2,9 @@ import prisma from "@/libs/db";
 import { Item } from "./_components/Item";
 
 export default async function MyItem({ params }) {
+  const session = await auth();
+  if (!session) redirect("/login")
+
   const { id } = await params;
 
   const item = await prisma.item.findUnique({
