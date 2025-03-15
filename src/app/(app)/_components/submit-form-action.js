@@ -102,7 +102,7 @@ function extractFormData(formData) {
   };
 }
 
-function validateFormData({ name, category, timeframe, location, image }) {
+function validateFormData({ name, category, timeframe, location }) {
   return name && category && timeframe && location;
 }
 
