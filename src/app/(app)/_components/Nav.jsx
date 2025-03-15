@@ -1,6 +1,6 @@
-import { AvatarMenu } from './avatar-menu'
-import { auth } from '@/libs/auth'
-import Image from 'next/image'
+import { AvatarMenu } from "./avatar-menu";
+import { auth } from "@/libs/auth";
+import Image from "next/image";
 import {
   Navbar,
   NavbarBrand,
@@ -8,10 +8,17 @@ import {
   NavbarItem,
   Link,
   Button,
-} from '@heroui/react'
+} from "@heroui/react";
+import { NotificationBadge } from "./notification-badge";
+import { getNotificationsAction } from "../_actions/notificationAction";
 
 export const Nav = async () => {
-  const session = await auth()
+  const session = await auth();
+
+  let notifications = [];
+  if (session) {
+    notifications = await getNotificationsAction(session.userId);
+  }
 
   return (
     <Navbar
@@ -44,7 +51,10 @@ export const Nav = async () => {
       <NavbarContent justify="end">
         <NavbarItem>
           {session ? (
-            <AvatarMenu session={session} />
+            <div className="flex flex-row items-center gap-6">
+              <NotificationBadge notifications={notifications} />
+              <AvatarMenu session={session} />
+            </div>
           ) : (
             <Button
               as={Link}
@@ -58,5 +68,5 @@ export const Nav = async () => {
         </NavbarItem>
       </NavbarContent>
     </Navbar>
-  )
-}
+  );
+};

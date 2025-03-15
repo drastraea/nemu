@@ -159,12 +159,12 @@ async function checkMatch(singleItem, imageUrl) {
       finalScore
     );
     if (singleItem.type === "LOST") {
-      await createNotification(singleItem.userId, match.id);
+      await createNotification(singleItem.userId, match.id, singleItem.name);
     } else {
       const item = await prisma.item.findUnique({
         where: { id: matchingStatus.item_id, type: "LOST" },
       });
-      await createNotification(item.userId, match.id);
+      await createNotification(item.userId, match.id, item.name);
     }
     return true;
   }
@@ -178,12 +178,13 @@ async function createMatch(lostItemId, foundItemId, score) {
   });
 }
 
-async function createNotification(userId, matchId) {
+async function createNotification(userId, matchId, lostItemName) {
   await prisma.notification.create({
     data: {
       userId,
       matchId,
-      message: "barangmu telah ditemukan",
+      type: "LOST_ITEM",
+      message: `We found a match to your item ${lostItemName}`,
     },
   });
 }
