@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from "next/image"
+import Link from "next/link"
 
 export const Footer = () => {
   return (
@@ -7,12 +7,14 @@ export const Footer = () => {
       <div className="container mx-auto px-6 py-6 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-2">
-            <Image
-              alt="nemu logo"
-              src="/images/nemu-w.png"
-              width={70}
-              height={35}
-            />
+            <Link href="/">
+              <Image
+                alt="nemu logo"
+                src="/images/nemu-w.png"
+                width={70}
+                height={35}
+              />
+            </Link>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
@@ -35,7 +37,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   About Us
@@ -64,7 +66,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   About Us
