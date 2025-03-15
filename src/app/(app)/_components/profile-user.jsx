@@ -23,6 +23,8 @@ export const ProfileUser = async () => {
     },
   })
 
+  const dateFormated = moment(user.createdAt).format("MMMM YYYY")
+
   const lostLength =
     user?.items.filter((item) => item.type === "LOST").length || 0
   const foundLength =
@@ -41,7 +43,7 @@ export const ProfileUser = async () => {
           <h3 className="text-3xl font-semibold">{user.name}</h3>
           <div className="flex items-center space-x-2">
             <DateIcon />
-            <div>Joined {moment(user.createdAt).format("MMMM YYYY")}</div>
+            <div>Joined {dateFormated}</div>
           </div>
           <div className="flex items-center space-x-4">
             <div>
