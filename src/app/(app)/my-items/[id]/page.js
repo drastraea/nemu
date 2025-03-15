@@ -1,28 +1,36 @@
-import prisma from '@/libs/db';
-import { Item } from './_components/Item';
+import prisma from "@/libs/db";
+import { Item } from "./_components/Item";
 
 export default async function MyItem({ params }) {
-    const { id } = await params;
+  const { id } = await params;
 
-    const item = await prisma.item.findUnique({
-        where: { id },
-        include: {
-            images: true,
-            asLostItem: true,
-        }
-    });
+  const item = await prisma.item.findUnique({
+    where: { id },
+    include: {
+      images: true,
+      asLostItem: true,
+    },
+  });
 
-    if (!item) return <div>Item not found</div>;
+  if (!item) return <div>Item not found</div>;
 
-    let matchItem = null;
-    const foundItemId = item.asLostItem[0]?.foundItemId;
+  const match = await prisma.match.findFirst({
+    where: {
+      lostItemId: item.id,
+      status: "PENDING",
+    },
+    include: {
+      foundItem: {
+        select: {
+          id: true,
+          name: true,
+          images: true,
+          timeframe: true,
+          location: true,
+        },
+      },
+    },
+  });
 
-    if (foundItemId) {
-        matchItem = await prisma.item.findUnique({
-            where: { id: foundItemId },
-            include: { images: true }
-        });
-    }
-
-    return <Item item={item} match={matchItem} />;
+  return <Item item={item} match={match} />;
 }

@@ -157,12 +157,15 @@ async function checkMatch(singleItem, imageUrl) {
 
   const finalScore =
     (matchingStatus.matching_score + imageComparison.similarity_score) / 2;
+
   if (finalScore >= 0.8) {
-    const match = await createMatch(
-      singleItem.id,
-      matchingStatus.item_id,
-      finalScore
-    );
+    // ensure lost and found item id is correct
+    const lostId =
+      singleItem.type === "LOST" ? singleItem.id : matchingStatus.item_id;
+    const foundId =
+      singleItem.type === "FOUND" ? singleItem.id : matchingStatus.item_id;
+    const match = await createMatch(lostId, foundId, finalScore);
+
     if (singleItem.type === "LOST") {
       await createNotification(singleItem.userId, match.id, singleItem.name);
     } else {
