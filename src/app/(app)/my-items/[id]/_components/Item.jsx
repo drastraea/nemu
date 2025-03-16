@@ -101,7 +101,7 @@ export const Item = ({ item, match }) => {
             )}
           </div>
         ) : (
-          <p>Item Found!</p>
+          <p>No match item</p>
         )}
 
         {stage === 2 && foundItem && (

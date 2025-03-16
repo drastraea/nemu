@@ -21,10 +21,11 @@ export default async function MyItem({ params }) {
   if (!item) return <div>Item not found</div>;
 
   const match = await getMatchAndVerifyFoundItem(item.id);
+  console.log(match);
 
-  if (match.status === "PENDING") {
-    return <Item item={item} match={match} />;
+  if (match?.status === "CONFIRMED") {
+    return <ItemFounded item={item} match={match} />;
   }
 
-  return <ItemFounded item={item} match={match} />;
+  return <Item item={item} match={match} />;
 }
