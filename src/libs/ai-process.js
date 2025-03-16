@@ -68,9 +68,6 @@ export async function matchLostItem(submittedItem) {
 
   const potentialMatches = await prisma.item.findMany({
     where: {
-      id: {
-        notIn: submittedItem.rejectItemId,
-      },
       type,
       category: matchItems.category,
       timeframe: {
@@ -96,6 +93,8 @@ export async function matchLostItem(submittedItem) {
       },
     },
   });
+
+  console.log(potentialMatches);
 
   if (!potentialMatches) return null;
 
