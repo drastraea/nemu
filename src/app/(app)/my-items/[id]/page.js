@@ -1,10 +1,12 @@
 import prisma from "@/libs/db";
 import { Item } from "./_components/Item";
 import { auth } from "@/libs/auth";
+import { getMatchAndVerifyFoundItem } from "../../_actions/matchAction";
+import { ItemFounded } from "./_components/item-founded";
 
 export default async function MyItem({ params }) {
   const session = await auth();
-  if (!session) redirect("/login")
+  if (!session) redirect("/login");
 
   const { id } = await params;
 
@@ -18,23 +20,11 @@ export default async function MyItem({ params }) {
 
   if (!item) return <div>Item not found</div>;
 
-  const match = await prisma.match.findFirst({
-    where: {
-      lostItemId: item.id,
-      status: "PENDING",
-    },
-    include: {
-      foundItem: {
-        select: {
-          id: true,
-          name: true,
-          images: true,
-          timeframe: true,
-          location: true,
-        },
-      },
-    },
-  });
+  const match = await getMatchAndVerifyFoundItem(item.id);
 
-  return <Item item={item} match={match} />;
+  if (match.status === "PENDING") {
+    return <Item item={item} match={match} />;
+  }
+
+  return <ItemFounded item={item} match={match} />;
 }
