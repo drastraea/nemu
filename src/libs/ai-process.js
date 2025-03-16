@@ -94,8 +94,6 @@ export async function matchLostItem(submittedItem) {
     },
   });
 
-  console.log(potentialMatches);
-
   if (!potentialMatches) return null;
 
   const aiRequest = JSON.stringify({
