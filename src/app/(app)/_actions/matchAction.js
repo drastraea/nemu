@@ -42,7 +42,12 @@ export async function getMatchAndVerifyFoundItem(itemId) {
           timeframe: true,
           location: true,
           userId: true,
-          user: true,
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
         },
       },
     },
