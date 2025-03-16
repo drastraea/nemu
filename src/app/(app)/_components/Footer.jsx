@@ -46,22 +46,14 @@ export const Footer = () => {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-semibold mb-4">Contact</h4>
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/lost-item"
+                  href="/"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  Report Lost Item
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/found-item"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Report Found Item
+                  Linkedin
                 </Link>
               </li>
               <li>
@@ -69,7 +61,15 @@ export const Footer = () => {
                   href="/"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  About Us
+                  Discord
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  X
                 </Link>
               </li>
             </ul>
@@ -79,7 +79,7 @@ export const Footer = () => {
           <p className="text-center text-gray-300">
             &copy; {new Date().getFullYear()} Nemu. All rights reserved.
           </p>
-          <h3>Devscale</h3>
+          <h3>Devscale.</h3>
         </div>
       </div>
     </footer>
