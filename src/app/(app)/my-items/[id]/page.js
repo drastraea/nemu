@@ -1,5 +1,6 @@
 import prisma from "@/libs/db";
 import { Item } from "./_components/Item";
+import { auth } from "@/libs/auth";
 
 export default async function MyItem({ params }) {
   const session = await auth();
