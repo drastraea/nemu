@@ -10,6 +10,7 @@ import {
   EyeSlashFilledIcon,
   UIEnvelope,
 } from "@/components/ui/icons";
+import Image from "next/image";
 
 export default function Page() {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,7 +18,15 @@ export default function Page() {
 
   return (
     <main className="space-y-4">
-      <section className="text-center space-y-2 pb-6">
+      <section className="text-center space-y-2 pb-8">
+        <Link href="/" className="flex justify-center">
+          <Image
+            alt="nemu logo"
+            src="/images/favicon-nemu-light.png"
+            width={50}
+            height={25}
+          />
+        </Link>
         <h3 className="text-2xl font-bold">Welcome back</h3>
         <p className="text-sm text-gray-500">
           Enter your credentials to access your account
@@ -41,7 +50,7 @@ export default function Page() {
             labelPlacement="outside"
             name="password"
             type={isVisible ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder="Enter Your Password"
             variant="bordered"
             radius="sm"
             endContent={

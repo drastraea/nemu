@@ -24,6 +24,7 @@ model User {
   session       Session[]
   items         Item[]
   notifications Notification[]
+  @@index([email])
 }
 
 model Session {
@@ -52,6 +53,7 @@ model Item {
   
   asLostItem   Match[] @relation("LostItem")
   asFoundItem  Match[] @relation("FoundItem")
+  @@index([type, category, timeframe])
 }
 
 enum ItemType {
@@ -66,6 +68,7 @@ model Image {
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@index([itemId])
 }
 
 model Tag {
@@ -75,6 +78,7 @@ model Tag {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   itemTags  ItemTag[]
+  @@index([name])
 }
 
 model ItemTag {
@@ -87,6 +91,7 @@ model ItemTag {
   updatedAt DateTime @updatedAt
 
   @@unique([itemId, tagId])
+  @@index([itemId, tagId])
 }
 
 enum MatchStatus {
@@ -108,6 +113,7 @@ model Match {
   notifications Notification[]
 
   @@unique([lostItemId, foundItemId])
+  @@index([lostItemId, foundItemId, status])
 }
 
 model Notification {
@@ -121,6 +127,8 @@ model Notification {
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, matchId, type])
 }
 
 enum NotificationType {

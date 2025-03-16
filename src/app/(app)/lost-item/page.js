@@ -25,7 +25,7 @@ export default function LostPage() {
 
   return (
     <div className="container max-w-6xl mx-auto pt-8 pb-24 px-4 space-y-6">
-      <Link href="/" className="flex items-center space-x-1">
+      <Link href="/" className="flex items-center space-x-1 w-fit">
         <LeftArrowIcon />
         <h3 className="text-2xl font-semibold ">Back</h3>
       </Link>

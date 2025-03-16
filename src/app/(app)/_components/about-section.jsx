@@ -8,16 +8,7 @@ export const AboutSection = () => {
           <div>
             <h2 className="text-3xl font-bold mb-6">About Nemu</h2>
             <p className="text-lg text-gray-500 mb-6">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos
-              fugiat qui possimus corporis officia voluptate animi, laborum
-              consequatur temporibus illo esse voluptas tenetur quia vitae
-              velit, quaerat sed repellat ad?
-            </p>
-            <p className="text-lg text-gray-500">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita
-              iure repellendus exercitationem nihil possimus nemo ducimus
-              voluptatum rerum! Non vitae hic laudantium illum ratione corporis
-              incidunt eos minima, cupiditate tempore!
+              Nemu is an innovative platform designed to bridge the gap between those who lose items and those who find them. With advanced AI technology, Nemu makes the lost and found process seamless, reducing manual search efforts, and improving item recovery rates. The platform employs sophisticated matching algorithms that analyze descriptions, photos, and location data to efficiently connect lost items with their rightful owners.
             </p>
           </div>
           <div className="relative h-[400px] w-[600px] overflow-hidden">
