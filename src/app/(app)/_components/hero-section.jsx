@@ -14,9 +14,7 @@ export const HeroSection = () => {
           </span>
         </h1>
         <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-8">
-          Nemu is a platform that allows users to report lost and found items
-          using images and descriptions. AI automatically tags and matches lost
-          items with found items to streamline the recovery process.
+          Nemu leverages AI to make the lost and found process seamless, reducing manual search efforts and improving item recovery rates.
         </p>
         <div className="flex gap-4 justify-center">
           <Button
