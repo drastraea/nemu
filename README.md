@@ -1,16 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Nemu
 
-## Requirement
+![Nemu Matching Process](./diagrams.png)
 
-You need to install postgres locally use docker.
+Nemu is an AI-powered lost and found platform that helps users recover lost items efficiently. Using advanced matching algorithms, Nemu reduces manual search efforts and increases item recovery rates.
 
-Start the docker
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- AI-driven lost and found item matching
+- Pre-filtering based on category, timeframe, and location
+- Real-time and periodic matching processes
+- User notifications for matched items
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/drastraea/nemu.git
+cd nemu
+```
+
+## Requirements
+
+- Docker
+- Node.js
+- PostgreSQL (via Docker)
+
+Start Docker:
 
 ```bash
 npm run docker-up
 ```
 
-Migrate the database
+Migrate the database:
 
 ```bash
 npx prisma migrate dev --name init
@@ -18,7 +50,7 @@ npx prisma migrate dev --name init
 
 ## Getting Started
 
-First, install all the dependencies:
+Install dependencies:
 
 ```bash
 npm i
@@ -30,8 +62,18 @@ Run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Modify `app/page.js` to customize the application. Changes update automatically.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to optimize fonts, including [Geist](https://vercel.com/font).
+
+## Contributing
+
+Feel free to contribute by opening issues or submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License.
